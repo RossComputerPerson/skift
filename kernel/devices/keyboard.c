@@ -31,7 +31,7 @@ typedef enum
 } ps2_keyboard_state_t;
 
 static ps2_keyboard_state_t keyboard_state = PS2KBD_STATE_NORMAL;
-static key_motion_t keyboard_keystate[__KEY_COUNT] = {0};
+static key_motion_t keyboard_keystate[__KEY_COUNT] = {KEY_MOTION_UP};
 static keymap_t *keyboard_keymap = NULL;
 
 int keyboad_get_codepoint(key_t key)
@@ -64,7 +64,6 @@ void keyboard_handle_key(key_t key, key_motion_t motion)
 {
     if (key_is_valid(key))
     {
-        keyboard_keystate[key] = motion;
         // keymap_keybing_t *binding = keymap_lookup(keyboard_keymap, key);
 
         // if (binding != NULL)
@@ -78,12 +77,31 @@ void keyboard_handle_key(key_t key, key_motion_t motion)
 
         if (motion == KEY_MOTION_DOWN)
         {
-            keyboard_event_t keyevent = {'\0', keyboad_get_codepoint(key)};
+            if (keyboard_keystate[key] == KEY_MOTION_UP)
+            {
+                keyboard_event_t keyevent = {key, keyboad_get_codepoint(key)};
+                message_t keypressed_event = message(KEYBOARD_KEYPRESSED, -1);
+                message_set_payload(keypressed_event, keyevent);
+
+                task_messaging_broadcast(task_kernel(), KEYBOARD_CHANNEL, &keypressed_event);
+            }
+
+            keyboard_event_t keyevent = {key, keyboad_get_codepoint(key)};
             message_t keypressed_event = message(KEYBOARD_KEYTYPED, -1);
             message_set_payload(keypressed_event, keyevent);
 
             task_messaging_broadcast(task_kernel(), KEYBOARD_CHANNEL, &keypressed_event);
         }
+        else if (motion == KEY_MOTION_UP)
+        {
+            keyboard_event_t keyevent = {key, keyboad_get_codepoint(key)};
+            message_t keypressed_event = message(KEYBOARD_KEYRELEASED, -1);
+            message_set_payload(keypressed_event, keyevent);
+
+            task_messaging_broadcast(task_kernel(), KEYBOARD_CHANNEL, &keypressed_event);
+        }
+        
+        keyboard_keystate[key] = motion;
     }
     else
     {
@@ -189,7 +207,7 @@ int keyboard_device_call(stream_t *stream, int request, void *args)
 
 void keyboard_setup()
 {
-    keyboard_keymap = keyboard_load_keymap("/res/keyboard/fr_fr.kmap");
+    keyboard_keymap = keyboard_load_keymap("/res/keyboard/en_us.kmap");
 
     irq_register(1, keyboard_irq);
 
