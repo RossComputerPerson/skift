@@ -31,4 +31,7 @@ int libdesktop_window_destroy(libdesktop_window** win);
 int libdesktop_window_getprop(libdesktop_window* win, unsigned long id, size_t* size, void** value);
 int libdesktop_window_setprop(libdesktop_window* win, unsigned long id, size_t size, void* value);
 
+int libdesktop_window_update(libdesktop_window* win);
+int libdesktop_window_sync(libdesktop_window** win);
+
 #endif

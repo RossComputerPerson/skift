@@ -45,3 +45,21 @@ int libdesktop_window_setprop(libdesktop_window* win, unsigned long id, size_t s
 	int argc;
 	return libdesktop_client_exec(win->appid, LIBDESKTOP_WIN_SETPROP, &argc, &argv, 4, win->id, id, size, value);
 }
+
+int libdesktop_window_update(libdesktop_window* win) {
+	void** argv;
+	int argc;
+	return libdesktop_client_exec(win->appid, LIBDESKTOP_WIN_UPDATE, &argc, &argv, 5, win->id, win->x, win->y, win->depth, win->width, win->height, win->framebuffer, win->flags);
+}
+
+int libdesktop_window_sync(libdesktop_window** win) {
+	void** argv;
+	int argc;
+	if (libdesktop_client_exec((*win)->appid, LIBDESKTOP_WIN_SYNC, &argc, &argv, 1, (*win)->id) == -1) return -1;
+	(*win)->x = (unsigned long)argv[0];
+	(*win)->y = (unsigned long)argv[1];
+	(*win)->width = (unsigned long)argv[2];
+	(*win)->height = (unsigned long)argv[3];
+	(*win)->depth = (int)argv[4];
+	return 0;
+}
