@@ -1,8 +1,6 @@
 #ifndef __LIBDESKTOP_IPC_H_
 #define __LIBDESKTOP_IPC_H_ 1
 
-#include <libdesktop/prop.h>
-
 typedef enum {
 	LIBDESKTOP_APP_REGISTER,
 	LIBDESKTOP_APP_UNREGISTER,

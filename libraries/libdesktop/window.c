@@ -23,3 +23,20 @@ int libdesktop_window_create(libdesktop_window** win, const char* appid, const c
 	memset((*win)->framebuffer, 0, (*win)->depth * ((*win)->width * (*win)->height));
 	return 0;
 }
+
+int libdesktop_window_destroy(libdesktop_window** win) {
+	free((*win)->framebuffer);
+	void** argv;
+	int argc;
+	if (libdesktop_client_exec((*win)->appid, LIBDESKTOP_WIN_DESTROY, &argc, &argv, 1, (*win)->id) == -1) return -1;
+	return 0;
+}
+
+int libdesktop_window_getprop(libdesktop_window* win, unsigned long id, size_t* size, void** value) {
+	void** argv;
+	int argc;
+	if (libdesktop_client_exec(win->appid, LIBDESKTOP_WIN_GETPROP, &argc, &argv, 2, win->id, id) == -1) return -1;
+	memcpy(value, argv, argc);
+        *size = argc;	
+	return -1;
+}
