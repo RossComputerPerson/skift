@@ -28,8 +28,7 @@ int libdesktop_window_destroy(libdesktop_window** win) {
 	free((*win)->framebuffer);
 	void** argv;
 	int argc;
-	if (libdesktop_client_exec((*win)->appid, LIBDESKTOP_WIN_DESTROY, &argc, &argv, 1, (*win)->id) == -1) return -1;
-	return 0;
+	return libdesktop_client_exec((*win)->appid, LIBDESKTOP_WIN_DESTROY, &argc, &argv, 1, (*win)->id);
 }
 
 int libdesktop_window_getprop(libdesktop_window* win, unsigned long id, size_t* size, void** value) {
@@ -39,4 +38,10 @@ int libdesktop_window_getprop(libdesktop_window* win, unsigned long id, size_t* 
 	memcpy(value, argv, argc);
         *size = argc;	
 	return -1;
+}
+
+int libdesktop_window_setprop(libdesktop_window* win, unsigned long id, size_t size, void* value) {
+	void** argv;
+	int argc;
+	return libdesktop_client_exec(win->appid, LIBDESKTOP_WIN_SETPROP, &argc, &argv, 4, win->id, id, size, value);
 }
