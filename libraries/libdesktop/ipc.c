@@ -39,12 +39,21 @@ int libdesktop_client_exec(const char* appid, libdesktop_ipc_opcode op, int* iar
 	message_t res;
 	free(pkt);
 	if (messaging_request(&msg, &res, 6000) == -1) return -1;
-	pkt = (libdesktop_packet*)message_payload(msg);
+	pkt = (libdesktop_packet*)message_payload(res);
 	*iargc = pkt->argc;
 	if ((*iargv = malloc(sizeof(void*) * pkt->argc)) == NULL) {
 		error_set(-ERR_CANNOT_ALLOCATE_MEMORY);
 		return -1;
 	}
 	memcpy(*iargv, pkt->argv, sizeof(void*) * pkt->argc);
+	return 0;
+}
+
+int libdesktop_client_atom(const char* name, unsigned long* id) {
+	message_t msg = message(LIBDESKTOP_CLIENT_ATOM, -1);
+	message_set_payload_ptr(msg, name, strlen(name));
+	message_t res;
+	if (messaging_request(&msg, &res, 6000) == -1) return -1;
+	*id = (unsigned long)message_payload(res);
 	return 0;
 }

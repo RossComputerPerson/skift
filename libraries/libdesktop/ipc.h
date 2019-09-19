@@ -20,6 +20,7 @@ typedef enum {
 #define LIBDESKTOP_CLIENT_CONNECT MSGLABEL("libdesktop", "client", "connect")
 #define LIBDESKTOP_CLIENT_DISCONNECT MSGLABEL("libdesktop", "client", "disconnect")
 #define LIBDESKTOP_CLIENT_EXEC MSGLABEL("libdesktop", "client", "exec")
+#define LIBDESKTOP_CLIENT_ATOM MSGLABEL("libdesktop", "client", "atom")
 
 typedef struct {
 	libdesktop_ipc_opcode op;
@@ -32,5 +33,6 @@ typedef struct {
 int libdesktop_client_connect(const char* appid);
 int libdesktop_client_disconnect(const char* appid);
 int libdesktop_client_exec(const char* appid, libdesktop_ipc_opcode op, int* iargc, void*** iargv, int argc, ...);
+int libdesktop_client_atom(const char* name, unsigned long* id);
 
 #endif
