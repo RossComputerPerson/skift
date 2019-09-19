@@ -14,7 +14,6 @@ typedef struct {
 	unsigned int id;
 	unsigned long flags;
 
-	char* title;
 	char* appid;
 
 	unsigned long x;
@@ -28,5 +27,8 @@ typedef struct {
 
 int libdesktop_window_create(libdesktop_window** win, const char* appid, const char* title, unsigned long flags, unsigned long x, unsigned long y, unsigned long width, unsigned long height);
 int libdesktop_window_destroy(libdesktop_window** win);
+
+int libdesktop_window_getprop(libdesktop_window* win, unsigned long id, size_t* size, void** value);
+int libdesktop_window_setprop(libdesktop_window* win, unsigned long id, size_t size, void* value);
 
 #endif
