@@ -16,7 +16,7 @@ int libdesktop_client_disconnect(const char* appid) {
 	return messaging_broadcast(LIBDESKTOP_CLIENT_DISCONNECT, &msg);
 }
 
-int libdesktop_client_exec(const char* appid, libdesktop_ipc_opcode op, int argc, ...) {
+int libdesktop_client_exec(const char* appid, libdesktop_ipc_opcode op, int* iargc, void*** iargv, int argc, ...) {
 	libdesktop_packet* pkt = malloc(sizeof(libdesktop_packet));
 	if (pkt == NULL) {
 		error_set(-ERR_CANNOT_ALLOCATE_MEMORY);
@@ -32,5 +32,15 @@ int libdesktop_client_exec(const char* appid, libdesktop_ipc_opcode op, int argc
 	}
 	message_t msg = message(LIBDESKTOP_CLIENT_EXEC, 1);
 	message_set_payload_ptr(msg, pkt, sizeof(libdesktop_packet));
-	return messaging_broadcast(LIBDESKTOP_CLIENT_EXEC, &msg);
+	message_t res;
+	free(pkt);
+	if (messaging_request(&msg, &res, 6000) == -1) return -1;
+	pkt = (libdesktop_packet*)message_payload(msg);
+	*iargc = pkt->argc;
+	if ((*iargv = malloc(sizeof(void*) * pkt->argc)) == NULL) {
+		error_set(-ERR_CANNOT_ALLOCATE_MEMORY);
+		return -1;
+	}
+	memcpy(*iargv, pkt->argv, sizeof(void*) * pkt->argc);
+	return 0;
 }

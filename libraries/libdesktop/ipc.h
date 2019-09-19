@@ -31,6 +31,6 @@ typedef struct {
 
 int libdesktop_client_connect(const char* appid);
 int libdesktop_client_disconnect(const char* appid);
-int libdesktop_client_exec(const char* appid, libdesktop_ipc_opcode op, int count, ...);
+int libdesktop_client_exec(const char* appid, libdesktop_ipc_opcode op, int* iargc, void*** iargv, int argc, ...);
 
 #endif
