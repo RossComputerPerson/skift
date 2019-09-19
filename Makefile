@@ -42,6 +42,10 @@ LIBCONSOLE=$(SYSROOT)/lib/libconsole.a
 LIBCONSOLE_SRC=$(wildcard libraries/libconsole/*.c)
 LIBCONSOLE_OBJ=$(patsubst %.c,%.o,$(LIBCONSOLE_SRC))
 
+LIBDESKTOP=$(SYSROOT)/lib/libdesktop.a
+LIBDESKTOP_SRC=$(wildcard libraries/libdesktop/*.c)
+LIBDESKTOP_OBJ=$(patsubst %.c,%.o,$(LIBDESKTOP_SRC))
+
 LIBDEVICE=$(SYSROOT)/lib/libdevice.a
 LIBDEVICE_SRC=$(wildcard libraries/libdevice/*.c)
 LIBCONSOLE_OBJ=$(patsubst %.c,%.o,$(LIBCONSOLE_SRC))
@@ -79,6 +83,7 @@ CRTS=$(SYSROOT)/lib/crt0.o \
 	 $(SYSROOT)/lib/crtn.o
 
 LIBRARIES=$(LIBCONSOLE) \
+	  	  $(LIBDESKTOP) \
 		  $(LIBDEVICE) \
 		  $(LIBFILE)  \
 		  $(LIBFORM) \
@@ -179,6 +184,10 @@ $(SYSROOT)/lib/crtn.o: libraries/crtn.s
 
 $(LIBCONSOLE): $(LIBCONSOLE_OBJ)
 	mkdir -p $(SYSROOT)/lib/
+	$(AR) $(ARFLAGS) $@ $^
+
+$(LIBDESKTOP): $(LIBDESKTOP_OBJ)
+	mkdir -p $(SYSROOT)/lib
 	$(AR) $(ARFLAGS) $@ $^
 
 $(LIBDEVICE): $(LIBCONSOLE_OBJ)
