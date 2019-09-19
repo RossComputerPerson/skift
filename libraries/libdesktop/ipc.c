@@ -30,6 +30,10 @@ int libdesktop_client_exec(const char* appid, libdesktop_ipc_opcode op, int* iar
 		error_set(-ERR_CANNOT_ALLOCATE_MEMORY);
 		return -1;
 	}
+	va_list ap;
+	va_start(ap, argc);
+	for (int i = 0; i < argc; i++) pkt->argv[i] = va_arg(ap, void*);
+	va_end(ap);
 	message_t msg = message(LIBDESKTOP_CLIENT_EXEC, 1);
 	message_set_payload_ptr(msg, pkt, sizeof(libdesktop_packet));
 	message_t res;

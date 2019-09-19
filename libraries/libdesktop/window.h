@@ -21,6 +21,9 @@ typedef struct {
 	unsigned long y;
 	unsigned long width;
 	unsigned long height;
+	int depth;
+
+	void* framebuffer;
 } libdesktop_window;
 
 int libdesktop_window_create(libdesktop_window** win, const char* appid, const char* title, unsigned long flags, unsigned long x, unsigned long y, unsigned long width, unsigned long height);
